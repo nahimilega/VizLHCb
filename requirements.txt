@@ -1,4 +1,5 @@
 pyvis
 networkx
 matplotlib
-PyQT5==5.9
+PyQT5
+PyQtWebEngine
