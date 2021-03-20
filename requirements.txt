@@ -3,3 +3,4 @@ networkx
 matplotlib
 PyQT5
 PyQtWebEngine
+PyYAML

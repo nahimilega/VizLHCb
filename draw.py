@@ -1,11 +1,8 @@
 import sys
 
-
-
 import networkx as nx 
 from pyvis.network import Network
-from PyQt5.QtWidgets import QWidget, QApplication, QVBoxLayout, QPushButton, QMainWindow, QTextEdit, QLineEdit
-from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QWidget, QApplication, QVBoxLayout, QPushButton, QMainWindow, QTextEdit, QLineEdit, QComboBox
 from PyQt5.QtWebEngineWidgets import QWebEngineView
 from PyQt5.QtCore import pyqtSlot
 import PyQt5.QtWidgets as QtWidgets
@@ -29,7 +26,14 @@ class VisualizeGraph(QMainWindow):
         """
         self.webEngineView = QWebEngineView()
         self.setCentralWidget(self.webEngineView)
+
         self.node_list = QComboBox()
+        self.node_list_delete_start = QComboBox()
+        self.node_list_delete_end = QComboBox()
+        self.node_list_add_start = QComboBox()
+        self.node_list_add_end = QComboBox()
+
+        self.populate_node_list()
         self.make_collapsable_box()
         self.setGeometry(50, 50, 1200, 800)
         self.setWindowTitle('Draw/Edit Newtork')
@@ -50,6 +54,10 @@ class VisualizeGraph(QMainWindow):
         scroll.setWidgetResizable(True)
         vlay = QtWidgets.QVBoxLayout(content)
         self.add_node_tab(vlay)
+        self.delete_node_tab(vlay)
+        self.add_edge_tab(vlay)
+        self.remove_edge_tab(vlay)
+        self.save_tab(vlay)
         '''
         for i in range(10):
             box = CollapsibleBox("Collapsible Box Header-{}".format(i))
@@ -94,45 +102,166 @@ class VisualizeGraph(QMainWindow):
         self.create_node_button = QPushButton('Create Node')
         self.create_node_button.clicked.connect(self.create_node)
         lay.addWidget(self.create_node_button)
-
-        
-        for j in range(len(self.graph.graph.nodes)):
-            label = QtWidgets.QLabel("{}".format(j))
-            color = QtGui.QColor(*[random.randint(0, 255) for _ in range(3)])
-            label.setStyleSheet(
-                "background-color: {}; color : white;".format(color.name())
-            )
-            label.setAlignment(QtCore.Qt.AlignCenter)
-            lay.addWidget(label)
-
         box.setContentLayout(lay)
 
     @pyqtSlot()
     def create_node(self):
+        """Add node, activated when button is pressed
+        """
         nodeLabel = self.nodeLabel.text()
         self.graph.add_node(nodeLabel)
         self.reload_graph()
         self.nodeLabel.clear()
+        self.populate_node_list()
+
+
+    def delete_node_tab(self, vlay):
+        box = CollapsibleBox("Delete Node")
+        vlay.addWidget(box)
+        lay = QtWidgets.QVBoxLayout()
+
+        label = QtWidgets.QLabel("Selet Node")
+        lay.addWidget(label)
+        lay.addWidget(self.node_list)
+
+        self.delete_node_button = QPushButton('Delete Node')
+        self.delete_node_button.clicked.connect(self.remove_node)
+        lay.addWidget(self.delete_node_button)
+        box.setContentLayout(lay)
+
+
+    @pyqtSlot()
+    def remove_node(self):
+        """Add node, activated when button is pressed
+        """
+        nodeLabel = self.node_list.currentText()
+        self.graph.delete_node(nodeLabel)
+        self.reload_graph()
+        self.populate_node_list()
+
+
+    ############### Edge operations
+
+    def add_edge_tab(self, vlay):
+        box = CollapsibleBox("Add Edge")
+        vlay.addWidget(box)
+        lay = QtWidgets.QVBoxLayout()
+
+        label = QtWidgets.QLabel("Selet Start Node")
+        lay.addWidget(label)
+        lay.addWidget(self.node_list_add_start)
+
+        label = QtWidgets.QLabel("Selet End Node")
+        lay.addWidget(label)
+        lay.addWidget(self.node_list_add_end)
+
+        label = QtWidgets.QLabel("Weight")
+        lay.addWidget(label)
+        self.weight_input = QLineEdit(self)
+        lay.addWidget(self.weight_input)
+
+        self.add_edge_button = QPushButton('Add Edge')
+        self.add_edge_button.clicked.connect(self.add_edge)
+        lay.addWidget(self.add_edge_button)
+        box.setContentLayout(lay)
+
+    @pyqtSlot()
+    def add_edge(self):
+        """Delete Edge, activated when button is pressed
+        """
+        nodeLabel_start = self.node_list_add_start.currentText()
+        nodeLabel_end = self.node_list_add_end.currentText()
+        weight = self.weight_input.text()
+
+        try:
+            weight = float(weight)
+            self.graph.add_edge(nodeLabel_start, nodeLabel_end, weight)
+        except ValueError:
+            print("Weight invalid, taking default value")
+            self.graph.add_edge(nodeLabel_start, nodeLabel_end)
+
+        self.reload_graph()
+        self.weight_input.clear()
+        self.populate_node_list()
+
+    def remove_edge_tab(self, vlay):
+        box = CollapsibleBox("Delete Edge")
+        vlay.addWidget(box)
+        lay = QtWidgets.QVBoxLayout()
+
+        label = QtWidgets.QLabel("Selet Start Node")
+        lay.addWidget(label)
+        lay.addWidget(self.node_list_delete_start)
+
+        label = QtWidgets.QLabel("Selet End Node")
+        lay.addWidget(label)
+        lay.addWidget(self.node_list_delete_end)
+
+        self.delete_edge_button = QPushButton('Delete Edge')
+        self.delete_edge_button.clicked.connect(self.remove_edge)
+        lay.addWidget(self.delete_edge_button)
+        box.setContentLayout(lay)
+
+    @pyqtSlot()
+    def remove_edge(self):
+        """Delete Edge, activated when button is pressed
+        """
+        nodeLabel_start = self.node_list_delete_start.currentText()
+        nodeLabel_end = self.node_list_delete_end.currentText()
+        self.graph.delete_edge(nodeLabel_start, nodeLabel_end)
+
+        self.reload_graph()
+        self.weight_input.clear()
+        self.populate_node_list()
+
+    ################################
+
+    def save_tab(self, vlay):
+        box = CollapsibleBox("Save Graph")
+        vlay.addWidget(box)
+        lay = QtWidgets.QVBoxLayout()
+
+        label = QtWidgets.QLabel("File name(without extension")
+        lay.addWidget(label)
+
+        self.filename_text = QLineEdit(self)
+        lay.addWidget(self.filename_text)
+
+        self.file_type = QComboBox()
+        self.file_type.addItems([ "GML Format", "Adjacency list", "YAML"])
+        lay.addWidget(self.file_type)
+
         
-    def delete_node_tab(self):
+        self.save_file_button = QPushButton('Save File')
+        self.save_file_button.clicked.connect(self.save_file)
+        lay.addWidget(self.save_file_button)
+        box.setContentLayout(lay)
 
-      self.cb = QComboBox()
-      self.cb.clear()
-      self.cb.addItem("C")
-      self.cb.addItem("C++")
-      self.cb.addItems(["Java", "C#", "Python"])
-      self.cb.currentIndexChanged.connect(self.selectionchange)
+    @pyqtSlot()
+    def save_file(self):
+        """Write graph in file, activated when Save File button is pressed
+        """
+        filename = self.filename_text.text()
+        fileType = self.file_type.currentText()
+        if str(filename) != "":
+            self.graph.save_graph(str(filename), fileType)
+        self.filename_text.clear()
 
-
-        pass
+    #######################################################################################################
     def populate_node_list(self):
+        """Populate the UI component of list of nodes
+        """
+        nodes = list(map(str, list(self.graph.graph.nodes)))
         self.node_list.clear()
-        self.node_list.addItems(list(self.graph.graph.nodes))
-
-    def add_edge_tab(self):
-        pass
-    def delete_edge_tab(self):
-        pass
+        self.node_list.addItems(nodes)
+        self.node_list_add_start.clear()
+        self.node_list_add_start.addItems(nodes)
+        self.node_list_add_end.clear()
+        self.node_list_add_end.addItems(nodes)
+        self.node_list_delete_start.clear()
+        self.node_list_delete_start.addItems(nodes)
+        self.node_list_delete_end.clear()
+        self.node_list_delete_end.addItems(nodes)
 
     def loadPage(self):
         with open('curr.html', 'r') as f:
