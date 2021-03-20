@@ -1,0 +1,4 @@
+pyvis
+networkx
+matplotlib
+PyQT5==5.9
