@@ -1,11 +1,10 @@
 import sys
-from PyQt5.QtWidgets import QWidget, QApplication, QVBoxLayout, QPushButton
-from PyQt5.QtWidgets import QApplication
-from PyQt5.QtWebEngineWidgets import QWebEngineView
+
+
 
 import networkx as nx 
-from pyvis.network import Networkimport sys
-from PyQt5.QtWidgets import QWidget, QApplication, QVBoxLayout, QPushButton, QMainWindow, QTextEdit
+from pyvis.network import Network
+from PyQt5.QtWidgets import QWidget, QApplication, QVBoxLayout, QPushButton, QMainWindow, QTextEdit, QLineEdit
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtWebEngineWidgets import QWebEngineView
 from PyQt5.QtCore import pyqtSlot
@@ -30,10 +29,11 @@ class VisualizeGraph(QMainWindow):
         """
         self.webEngineView = QWebEngineView()
         self.setCentralWidget(self.webEngineView)
+        self.node_list = QComboBox()
         self.make_collapsable_box()
         self.setGeometry(50, 50, 1200, 800)
-
-        self.setWindowTitle('Visualize Newtork')
+        self.setWindowTitle('Draw/Edit Newtork')
+        
         self.show()
 
 
@@ -49,8 +49,8 @@ class VisualizeGraph(QMainWindow):
         scroll.setWidget(content)
         scroll.setWidgetResizable(True)
         vlay = QtWidgets.QVBoxLayout(content)
-        self.info_tab(vlay)
-        
+        self.add_node_tab(vlay)
+        '''
         for i in range(10):
             box = CollapsibleBox("Collapsible Box Header-{}".format(i))
             vlay.addWidget(box)
@@ -65,13 +65,38 @@ class VisualizeGraph(QMainWindow):
                 lay.addWidget(label)
 
             box.setContentLayout(lay)
+        '''
         vlay.addStretch()
 
     def add_node_tab(self, vlay):
         box = CollapsibleBox("Add Node")
         vlay.addWidget(box)
         lay = QtWidgets.QVBoxLayout()
-        for j in range(8):
+
+        label = QtWidgets.QLabel("Add Label")
+        lay.addWidget(label)
+        self.nodeLabel = QLineEdit(self)
+        lay.addWidget(self.nodeLabel)
+
+        '''
+        label = QtWidgets.QLabel("Add Color")
+        lay.addWidget(label)
+        self.nodeLabel = QLineEdit(self)
+        lay.addWidget(nodeLabel)
+        '''
+        '''
+        label = QtWidgets.QLabel("Add Value(To make it big/small)")
+        lay.addWidget(label)
+        self.nodeLabel = QLineEdit(self)
+        lay.addWidget(nodeLabel)
+        '''
+
+        self.create_node_button = QPushButton('Create Node')
+        self.create_node_button.clicked.connect(self.create_node)
+        lay.addWidget(self.create_node_button)
+
+        
+        for j in range(len(self.graph.graph.nodes)):
             label = QtWidgets.QLabel("{}".format(j))
             color = QtGui.QColor(*[random.randint(0, 255) for _ in range(3)])
             label.setStyleSheet(
@@ -82,8 +107,27 @@ class VisualizeGraph(QMainWindow):
 
         box.setContentLayout(lay)
 
+    @pyqtSlot()
+    def create_node(self):
+        nodeLabel = self.nodeLabel.text()
+        self.graph.add_node(nodeLabel)
+        self.reload_graph()
+        self.nodeLabel.clear()
+        
     def delete_node_tab(self):
+
+      self.cb = QComboBox()
+      self.cb.clear()
+      self.cb.addItem("C")
+      self.cb.addItem("C++")
+      self.cb.addItems(["Java", "C#", "Python"])
+      self.cb.currentIndexChanged.connect(self.selectionchange)
+
+
         pass
+    def populate_node_list(self):
+        self.node_list.clear()
+        self.node_list.addItems(list(self.graph.graph.nodes))
 
     def add_edge_tab(self):
         pass
@@ -91,24 +135,16 @@ class VisualizeGraph(QMainWindow):
         pass
 
     def loadPage(self):
-
-        with open('nx2.html', 'r') as f:
+        with open('curr.html', 'r') as f:
             html = f.read()
             self.webEngineView.setHtml(html)
 
-    def button_clicked(self):
-        #self.label.setText("you pressed the button")
-        self.nt.add_node(10,label="Node 0")
-        self.nt.write_html('nx.html')
-        self.update()
+    def reload_graph(self):
+        nt = Network('500px', '500px')
+        nt.from_nx(self.graph.graph)
+        nt.write_html('curr.html')
         self.loadPage()
-
-    '''
-    def side_bar()
-        #self.webEngineView.reload()
-
-    '''
-
+        self.update()
 
 def main():
     app = QApplication(sys.argv)
@@ -244,65 +280,3 @@ write_html
 '''
 
 """
-import matplotlib.pyplot as plt 
-  
-
-from Graph import Graph
-
-class Example(QWidget):
-
-    def __init__(self):
-        super().__init__()
-
-        self.initUI()
-
-    def initUI(self):
-        g = nx.Graph() 
-
-
-        
-
-        vbox = QVBoxLayout(self)
-
-        self.webEngineView = QWebEngineView()
-        self.loadPage()
-
-        vbox.addWidget(self.webEngineView)
-
-        self.setLayout(vbox)
-
-
-        self.setGeometry(300, 300, 350, 250)
-        self.setWindowTitle('QWebEngineView')
-
-        self.b1 = QPushButton(self)
-        self.b1.setText("click me!")
-        self.b1.clicked.connect(self.button_clicked)
-        self.show()
-
-    def loadPage(self):
-
-        with open('nx.html', 'r') as f:
-            html = f.read()
-            self.webEngineView.setHtml(html)
-
-    def button_clicked(self):
-        #self.label.setText("you pressed the button")
-
-
-        self.nt.add_node(10,label="Node 0")
-        self.nt.write_html('nx.html')
-        
-        self.update()
-        self.loadPage()
-        #self.webEngineView.reload()
-
-def main():
-
-    app = QApplication(sys.argv)
-    ex = Example()
-    sys.exit(app.exec_())
-
-
-if __name__ == '__main__':
-    main()

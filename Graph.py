@@ -4,9 +4,10 @@ import matplotlib.pyplot as plt
 
 
 class Graph():
-
+    
     def __init__(self):
-        graph = nx.Graph()
+        self.graph = nx.Graph()
+        self.default_label = 1
 
     def load_csv(self, filename):
         pass
@@ -23,8 +24,19 @@ class Graph():
     def add_verticses(iterator):
         self.graph.add_nodes_from(iterator)
 
-    def add_vertics(vertics):
-        self.graph.add_node(vertics)
+    def add_node(self, nodeLabel):
+        '''
+        Make a node in the graph, assign a number if the label not specified
+
+        Args:
+            nodeLabel: Node Label
+
+        '''
+        if nodeLabel != "":
+            self.graph.add_node(nodeLabel)
+        else:
+            self.graph.add_node(self.default_label)
+            self.default_label += 1
 
     def remove_edge(start_node, end_node):
         self.graph.remove_node((start_node, start_node))
