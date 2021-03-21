@@ -3,8 +3,8 @@ import sys
 from PyQt5.QtGui     import *
 from PyQt5.QtCore    import *
 from PyQt5.QtWidgets import *
-from ui.draw import DrawGraph
-from ui.visualize import VisualizeGraph
+from ViZLHCb.ui.draw import DrawGraph
+from ViZLHCb.ui.visualize import VisualizeGraph
 
 class Window(QMainWindow):
     '''Main UI component of the application
@@ -27,11 +27,11 @@ class Window(QMainWindow):
         self.setGeometry(self.top, self.left, self.width, self.height)
 
         visualize_graph = QPushButton('Visualize Graph', self)
-        visualize_graph.move(100, 100)
+        visualize_graph.setGeometry(100, 100, 150, 30)
         visualize_graph.clicked.connect(self.visualize_graph_onClick)
 
         draw_graph = QPushButton('Draw/Edit Graph', self)
-        draw_graph.setGeometry(100, 200, 100, 30)
+        draw_graph.setGeometry(100, 200, 150, 30)
         draw_graph.clicked.connect(self.draw_graph_onClick)
 
         self.select_file = QPushButton('Select graph file(to Visualize or edit)', self)
@@ -65,8 +65,7 @@ class Window(QMainWindow):
         self.cams.show()
         self.close()
 
-
-if __name__ == '__main__':
+def main():
     app = QApplication(sys.argv)
     ex = Window()
     sys.exit(app.exec_())

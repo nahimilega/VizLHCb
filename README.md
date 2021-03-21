@@ -1,11 +1,19 @@
 # VizLHCb
 
 
-## Run the graph
+## How to use
+Checkout git
 ```
-pip install -r requiremnets.txt
+git clone https://github.com/nahimilega/VizLHCb.git
+cd VizLHCb
 ```
-## Decision 
+Run the app
+
+```
+pip install -r requirements.txt
+python main.py
+```
+## Decisions
 ### Choosing NetworkX library
 "A man is only as good as his tools"     - Emmert Wolf
 1) NetworkX is widely used and very well intergrated with pyvis for providing interactive visualization
@@ -38,6 +46,7 @@ Here are the steps I followed to solve this problem
 * Network is a undirected graph. I assumed keeping in thought that jets, sensor and other detectors are completely controled by this network, and hence there would be a need to send switch on/switch off signal. Hence bidirectional data transfer.
 * There could be a connuctions between componens of same level for load balanacing purposes, hence can't be modeled as tree.
 * Edges are weighted, where weight represent the traffic it can handle. 
+* Program generates temporary HTML files
 * User is smart(Because error handling is not that great xD)
 
 ## Problems we witness at the scale of LHCb
@@ -69,3 +78,6 @@ As it is a internal network security is not an issue here :)
 https://stackoverflow.com/questions/52615115/how-to-create-collapsible-box-in-pyqt
 https://stackoverflow.com/questions/51154871/python-3-7-0-no-module-named-pyqt5-qtwebenginewidgets
 https://www.tutorialspoint.com/
+https://networkx.org/documentation/stable/index.html
+https://pyvis.readthedocs.io/en/latest/index.html
+https://graph-tool.skewed.de/
