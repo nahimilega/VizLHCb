@@ -1,4 +1,5 @@
 import sys
+sys.path.append('..')
 
 import networkx as nx 
 from pyvis.network import Network
@@ -12,11 +13,12 @@ import random
 import networkx as nx 
 from pyvis.network import Network
 
-from Graph import Graph
-import algorithms
-class VisualizeGraph(QMainWindow):
+from core.Graph import Graph
 
-    def __init__(self):
+
+class DrawGraph(QMainWindow):
+
+    def __init__(self, fileName, parent=None):
         super().__init__()
         self.graph = Graph() 
         self.initUI()

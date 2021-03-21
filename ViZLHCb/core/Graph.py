@@ -3,6 +3,7 @@ from pyvis.network import Network
 import matplotlib.pyplot as plt 
 import yaml
 
+
 class Graph():
     
     def __init__(self):
@@ -36,6 +37,14 @@ class Graph():
             print("The Error Message is ", e)
 
     def add_edge(self, start_node, end_node, weight=1):
+        '''Mke an undirected edge in the graph
+
+        Args:
+            start_node: staring node 
+            end_node: ending node
+            weight: weight of the edge
+
+        '''
         self.graph.add_edge(start_node, end_node, weight=weight)
 
     def delete_edge(self, start_node, end_node):
@@ -44,10 +53,6 @@ class Graph():
         except Exception as e:
             print("[ERROR] Issue in deleting edge from", start_node, "to", end_node)
             print("The Error Message is ", e)
-
-    def set_node_attributes(node, attributes):
-        for key, value in attributes.items():
-            self.graph[node][key] = value
 
     def save_graph(self, filename, fileType):
         """Write graph to GML or Adjacency list or YML format
@@ -64,18 +69,29 @@ class Graph():
         if fileType == "YAML":
             nx.write_yaml(self.graph, filename + ".yaml")
 
-    def load_graph(self, filename, fileType):
+    def load_graph(self, filename):
         """Read graph from GML or Adjacency list or YML format
         
         Args:
             filename : File or filename to read
-            fileType (str): Typo of file to parse, should be "GML Format" or "Adjacency list"
-                            or "YAML"
         """
-        if fileType == "GML Format":
-            self.graph = nx.read_gml(filename)
-        if fileType == "Adjacency list":
-            self.graph = nx.read_adjlist(filename)
-        if fileType == "YAML":
-            nx.read_yaml(self.graph, filename + ".yaml")
-        
+        try:
+            file_extention = list(filename.split("."))[-1]
+            if file_extention == "gml":
+                self.graph = nx.read_gml(filename)
+            if file_extention == "adjlist":
+                self.graph = nx.read_adjlist(filename)
+            if file_extention == "yaml":
+                nx.read_yaml(filename)
+        except Exception as e:
+            print("Error in loading Graph file: The error is", e)
+
+    def assign_node_title(self):
+        centrality = nx.betweenness_centrality(self.graph)
+        degree = self.graph.degree()
+        args = {}
+        for i in list(self.graph.nodes):
+            args[i] = "Degree: {}<br> Centrality: {}".format(degree[i], centrality[i])
+        nx.set_node_attributes(self.graph, args, 'title')
+
+

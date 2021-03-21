@@ -2,11 +2,47 @@
 
 
 ## Run the graph
-
-
+```
+pip install -r requiremnets.txt
+```
 ## Decision 
+### Choosing NetworkX library
+"A man is only as good as his tools"     - Emmert Wolf
+1) NetworkX is widely used and very well intergrated with pyvis for providing interactive visualization
+2) Graph tool, another library, has a faster implementation of algorithms; however, for the purpose of this application, at this small scale, it didn't have any significant edge.
+3) NetworkX provides lot more features.
+4) NetworkX has Good Documentation, Wide community and well maintained.
+
+### Choosing data structure for storing graph 
+The data structure that I considered included set, heaps, queue, hashtable, tree, trias, list of pointers, adjacency list, adjacency matrix etc
+For this problem, we would be using software to design, simulate and test the network for potential problems. Hence would be **heavily using graph iterating algorithms** like BFS, DFS or flow management algorithm. Hence, adjacency list or adjacency matrix would be more suitable for the task.
+Moreover, the graph would be **sparsely populated**, as each node in L1, L2 and L3 layers of LHCb would be only connected to a handful of nodes from another layer.  </br>
+Therefore **adjacency list would be the most logical choice** for storing the data as it would provide maximum performance with relatively low storage space.
+</br>
+</br>
+Furthermore, to have a standardized process and facilitate **interoperability** with other graphing, visualizing software and graph databases. **The application provides feature to import/export graphs in GML(Graph Manipulation language) and YAML formats as well.**
 
 
+### How you solved the issue of visualization.
+Here are the steps I followed to solve this problem
+1) Start with understanding the problem statement and LHCb network architecture. Solving question one links provided helped in developing an understanding of the problem
+2) Explore the tools and technology that I would need for the task. Here I discovered networkX, pyvis, graph-tool and other existing tools and similar ideas.
+3) Based on research done and the problem statement, I decided on the libraries I an going to use(networkX, pyvis) and made a basic design of the software structure based on the objective of the problem and OOPs concepts
+4) Made a preliminary graph class to get comfortable with the tools as well as to make a backend of the application
+5) Expand the functionality and made a basic GUI.
+6) Further expanded the features, added additional features.
+7) Did error handling, testing and documenting.
+
+
+## Assumptions 
+* Network is a undirected graph. I assumed keeping in thought that jets, sensor and other detectors are completely controled by this network, and hence there would be a need to send switch on/switch off signal. Hence bidirectional data transfer.
+* There could be a connuctions between componens of same level for load balanacing purposes, hence can't be modeled as tree.
+* Edges are weighted, where weight represent the traffic it can handle. 
+* User is smart(Because error handling is not that great xD)
+
+## Problems we witness at the scale of LHCb
+1) For LHCb, the system would be having millions of nodes, hence it would need a sophisticated implementation of algorithms with the focus on increasing performance. 
+2) Designing a GUI for visualizing millions of nodes in an effective and user-friendly manner would be a primary task
 
 
 # Question 1
