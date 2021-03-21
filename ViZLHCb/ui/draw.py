@@ -41,7 +41,7 @@ class DrawGraph(QMainWindow):
         self.make_collapsable_box()
         self.setGeometry(50, 50, 1200, 800)
         self.setWindowTitle('Draw/Edit Newtork')
-        
+        self.reload_graph()
         self.show()
 
 
@@ -62,22 +62,7 @@ class DrawGraph(QMainWindow):
         self.add_edge_tab(vlay)
         self.remove_edge_tab(vlay)
         self.save_tab(vlay)
-        '''
-        for i in range(10):
-            box = CollapsibleBox("Collapsible Box Header-{}".format(i))
-            vlay.addWidget(box)
-            lay = QtWidgets.QVBoxLayout()
-            for j in range(8):
-                label = QtWidgets.QLabel("{}".format(j))
-                color = QtGui.QColor(*[random.randint(0, 255) for _ in range(3)])
-                label.setStyleSheet(
-                    "background-color: {}; color : white;".format(color.name())
-                )
-                label.setAlignment(QtCore.Qt.AlignCenter)
-                lay.addWidget(label)
 
-            box.setContentLayout(lay)
-        '''
         vlay.addStretch()
 
     def add_node_tab(self, vlay):
@@ -89,19 +74,6 @@ class DrawGraph(QMainWindow):
         lay.addWidget(label)
         self.nodeLabel = QLineEdit(self)
         lay.addWidget(self.nodeLabel)
-
-        '''
-        label = QtWidgets.QLabel("Add Color")
-        lay.addWidget(label)
-        self.nodeLabel = QLineEdit(self)
-        lay.addWidget(nodeLabel)
-        '''
-        '''
-        label = QtWidgets.QLabel("Add Value(To make it big/small)")
-        lay.addWidget(label)
-        self.nodeLabel = QLineEdit(self)
-        lay.addWidget(nodeLabel)
-        '''
 
         self.create_node_button = QPushButton('Create Node')
         self.create_node_button.clicked.connect(self.create_node)

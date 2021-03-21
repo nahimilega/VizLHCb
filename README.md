@@ -13,6 +13,11 @@ Run the app
 pip install -r requirements.txt
 python main.py
 ```
+
+## ScreenShot
+![Home Screen](docs/image/home_screen.png ) </br>
+![vizul](docs/image/viz.png ) </br>
+![Draw](docs/image/draw.png )
 ## Decisions
 ### Choosing NetworkX library
 "A man is only as good as his tools"     - Emmert Wolf

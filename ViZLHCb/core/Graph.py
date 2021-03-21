@@ -82,7 +82,7 @@ class Graph():
             if file_extention == "adjlist":
                 self.graph = nx.read_adjlist(filename)
             if file_extention == "yaml":
-                nx.read_yaml(filename)
+                self.graph = nx.read_yaml(filename)
         except Exception as e:
             print("Error in loading Graph file: The error is", e)
 
