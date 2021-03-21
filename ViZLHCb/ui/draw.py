@@ -249,7 +249,7 @@ class DrawGraph(QMainWindow):
             self.graph.save_graph(str(filename), fileType)
         self.filename_text.clear()
 
-    #######################################################################################################
+    ##############################################
     def populate_node_list(self):
         """Populate the UI component of list of nodes
         """
